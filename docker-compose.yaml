@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # React Frontend Service
+  cloud-frontend:
+    image: node:18-slim
+    ports:
+      - 3001:3000
+    restart: always
+    volumes:
+      - ../cloud-bite-frontend:${DEV_FOLDER_ABSOLUTE_PATH}
+    working_dir: ${DEV_FOLDER_ABSOLUTE_PATH}
+    command: npm run start
+    networks:
+      - app-network
+
+  # NestJS Backend Service
+  nestjs-backend:
+    container_name: nestjs-backend
+    build:
+      context: ../cloud-bite-backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      MYSQL_HOST: mysql-database
+      MYSQL_PORT: 3306
+      MYSQL_USER: admin_user
+      MYSQL_PASSWORD: admin_password
+      MYSQL_DATABASE: cloud_bite_database
+    networks:
+      - app-network
+
+  # MySQL Database Service
+  mysql-database:
+    container_name: mysql-database
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+      MYSQL_USER: admin_user
+      MYSQL_PASSWORD: admin_password
+      MYSQL_DATABASE: cloud_bite_database
+    volumes:
+      - mysql-data:${DEV_FOLDER_ABSOLUTE_PATH}
+    networks:
+      - app-network
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql-database
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+    depends_on:
+      - mysql-database
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
