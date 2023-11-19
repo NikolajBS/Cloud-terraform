@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "cloud-bite-sdu-final-tf-backend"
+    bucket = "cloud-handin-bucket"
   }
 }
 
@@ -15,7 +15,7 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "tf-backend" {
-  name          = "cloud-bite-sdu-final-tf-backend"
+  name          = "cloud-handin-bucket"
   force_destroy = false
   location      = "EU"
   storage_class = "STANDARD"
