@@ -16,6 +16,8 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 
+cloud-handin-project-4d0bbd5fa0ee.json
+
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
 override.tf
