@@ -19,7 +19,7 @@ resource "google_cloud_run_v2_service" "default" {
     }
 
     containers {
-      image = "gcr.io/cloud-bite-sdu-final/cloud-bite-backend-zbg:latest"
+      image = "gcr.io/cloud-handin-project/backend-img:latest"
 
       ports {
         container_port = 3000
