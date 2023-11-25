@@ -42,6 +42,34 @@ resource "google_compute_instance_template" "instance_template" {
   }
 }
 
+// instance group 
+resource "google_compute_instance_group_manager" "instance_group" {
+  name           = "my-instance-group"
+  base_instance_name = "instance-balance"
+  target_size    = 1  # Set desired target size
+  version {
+    name = "my-version-1"
+    instance_template = google_compute_instance_template.instance_template.self_link
+  }
+  named_port {
+    name = "http"
+    port = 80
+  }
+  zone = "eu-north1-a"
+}
+
+# health check
+resource "google_compute_health_check" "health_check" {
+  name               = "health-check"
+  check_interval_sec = 10
+  timeout_sec        = 5
+
+  http_health_check {
+    port        = 80
+    request_path = "/"
+  }
+}
+
 # service
 resource "google_compute_backend_service" "backend_service" {
   name        = "backend-service"
@@ -53,4 +81,12 @@ resource "google_compute_backend_service" "backend_service" {
     group = google_compute_instance_group_manager.instance_group.instance_group
   }
   health_checks = [google_compute_health_check.health_check.self_link]
+}
+
+# firewall
+resource "google_compute_global_forwarding_rule" "global_forwarding_rule" {
+    name       = "global-forwarding-rule"
+    ip_address = google_compute_address.lb_ip.address
+    port_range = "80"
+    target     = google_compute_target_pool.target_pool.self_link
 }
