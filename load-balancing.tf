@@ -17,7 +17,6 @@ resource "google_compute_global_address" "external" {
 resource "google_compute_target_http_proxy" "default" {
   project  = var.project
   name     = "l7-xlb-target-http-proxy"
-  provider = "google-beta"
   url_map  = google_compute_url_map.default.id
 }
 
@@ -69,6 +68,14 @@ resource "google_compute_health_check" "health_check" {
   }
 }
 
+// target pool
+resource "google_compute_target_pool" "target_pool" {
+  name = "target-pool"
+  region = "eu-north1"
+  health_checks = [google_compute_health_check.health_check.self_link]
+  instances = [google_compute_instance_group_manager.instance_group_manager.self_link]
+}
+
 # service
 resource "google_compute_backend_service" "backend_service" {
   name        = "backend-service"
@@ -77,7 +84,7 @@ resource "google_compute_backend_service" "backend_service" {
   timeout_sec = 10
 
   backend {
-    group = google_compute_instance_group_manager.instance_group.instance_group
+    group = google_compute_instance_group_manager.instance_group_manager.self_link
   }
   health_checks = [google_compute_health_check.health_check.self_link]
 }
