@@ -18,7 +18,7 @@ resource "google_cloudbuild_trigger" "cloud-bite-frontend" {
   }
 
   substitutions = {
-    _FRONTEND_BUCKET_NAME = "cloud-bite-frontend-zbg"
+    FRONTEND_BUCKET_NAME = google_storage_bucket.cloud_bite_frontend.name
   }
 # add backend config address as a substitutions and use it in pipeline build
   filename = "frontendPipeline.yml"

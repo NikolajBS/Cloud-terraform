@@ -64,7 +64,7 @@ resource "google_compute_health_check" "health_check" {
   timeout_sec        = 5
 
   http_health_check {
-    request_path = "/"
+    request_path = "/" # maybe change this to something else
   }
 }
 

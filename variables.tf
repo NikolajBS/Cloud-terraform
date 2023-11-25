@@ -1,11 +1,14 @@
 variable "gcp_svc_key" {
-  type = string
+  type        = string
+  description = "Service account key for Google Cloud Platform"
 }
 
 variable "project" {
-  type = string
+  type        = string
+  description = "Google Cloud Project ID"
 }
 
 variable "region" {
-  type = string
+  type        = string
+  description = "Google Cloud region"
 }
