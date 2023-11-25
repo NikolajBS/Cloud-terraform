@@ -1,5 +1,5 @@
 resource "google_compute_global_forwarding_rule" "http" {
-  provider              = google-beta
+  provider              = "google-beta"
   project               = var.project
   name                  = "http-rule"
   target                = google_compute_target_http_proxy.default.self_link
@@ -17,14 +17,14 @@ resource "google_compute_global_address" "external" {
 resource "google_compute_target_http_proxy" "default" {
   project  = var.project
   name     = "l7-xlb-target-http-proxy"
-  provider = google-beta
+  provider = "google-beta"
   url_map  = google_compute_url_map.default.id
 }
 
 resource "google_compute_url_map" "default" {
   project         = var.project
   name            = "l7-xlb-url-map"
-  provider        = google-beta
+  provider        = "google-beta"
   default_service = google_compute_backend_bucket.frontend_bucket_backend.self_link
 }
 
@@ -65,7 +65,6 @@ resource "google_compute_health_check" "health_check" {
   timeout_sec        = 5
 
   http_health_check {
-    port        = 80
     request_path = "/"
   }
 }
@@ -85,8 +84,8 @@ resource "google_compute_backend_service" "backend_service" {
 
 # firewall
 resource "google_compute_global_forwarding_rule" "global_forwarding_rule" {
-    name       = "global-forwarding-rule"
-    ip_address = google_compute_address.lb_ip.address
-    port_range = "80"
-    target     = google_compute_target_pool.target_pool.self_link
+  name       = "global-forwarding-rule"
+  ip_address = google_compute_global_address.external.address
+  port_range = "80"
+  target     = google_compute_target_pool.target_pool.self_link
 }
