@@ -1,5 +1,5 @@
 resource "google_compute_global_forwarding_rule" "http" {
-  provider              = "google-beta"
+  provider              = google-beta
   project               = var.project
   name                  = "http-rule"
   target                = google_compute_target_http_proxy.default.self_link
@@ -23,7 +23,7 @@ resource "google_compute_target_http_proxy" "default" {
 resource "google_compute_url_map" "default" {
   project         = var.project
   name            = "l7-xlb-url-map"
-  provider        = "google-beta"
+  provider        = google-beta
   default_service = google_compute_backend_bucket.frontend_bucket_backend.self_link
 }
 
@@ -73,7 +73,7 @@ resource "google_compute_target_pool" "target_pool" {
   name = "target-pool"
   region = "eu-north1"
   health_checks = [google_compute_health_check.health_check.self_link]
-  instances = [google_compute_instance_group_manager.instance_group_manager.self_link]
+  instances = ["https://www.googleapis.com/compute/v1/projects/cloud-handin-project/zones/eu-north1-a/instances/instance-balance"]
 }
 
 # service
@@ -84,7 +84,7 @@ resource "google_compute_backend_service" "backend_service" {
   timeout_sec = 10
 
   backend {
-    group = google_compute_instance_group_manager.instance_group_manager.self_link
+    group = google_compute_instance_group_manager.instance_group.instance_group
   }
   health_checks = [google_compute_health_check.health_check.self_link]
 }
