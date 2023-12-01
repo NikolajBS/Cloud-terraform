@@ -54,7 +54,7 @@ resource "google_compute_instance_group_manager" "instance_group" {
     name = "http"
     port = 80
   }
-  zone = "eu-north1-a"
+  zone = "europe-north1-a"
 }
 
 # health check
@@ -71,9 +71,9 @@ resource "google_compute_health_check" "health_check" {
 // target pool
 resource "google_compute_target_pool" "target_pool" {
   name = "target-pool"
-  region = "eu-north1"
+  region = "europe-north1"
   health_checks = [google_compute_health_check.health_check.self_link]
-  instances = ["https://www.googleapis.com/compute/v1/projects/cloud-handin-project/zones/eu-north1-a/instances/instance-balance"]
+  instances = ["https://www.googleapis.com/compute/v1/projects/cloud-handin-project/zones/europe-north1-a/instances/instance-balance"]
 }
 
 # service
