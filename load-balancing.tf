@@ -23,7 +23,7 @@ resource "google_compute_target_http_proxy" "default" {
 resource "google_compute_url_map" "default" {
   project         = var.project
   name            = "l7-xlb-url-map"
-  provider        = google-beta
+  provider        = "google-beta"
   default_service = google_compute_backend_bucket.frontend_bucket_backend.self_link
 }
 
