@@ -1,8 +1,9 @@
 resource "google_storage_bucket" "cloud_bite_frontend" {
-  name          = "cloud-bite-frontend-zbg"
-  force_destroy = false
+  name          = "cloud-bite-frontend-gpc"
+  force_destroy = true
   location      = "EU"
   storage_class = "STANDARD"
+  
   versioning {
     enabled = true
   }
@@ -27,3 +28,4 @@ resource "google_compute_backend_bucket" "frontend_bucket_backend" {
   bucket_name = google_storage_bucket.cloud_bite_frontend.name
   enable_cdn  = true
 }
+

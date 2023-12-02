@@ -15,12 +15,16 @@ resource "google_sql_database_instance" "instance" {
 }
 
 resource "google_sql_database" "my_database" {
-  name     = "cloud-bite-database"
+  name     = var.DB_NAME
   instance = google_sql_database_instance.instance.name
 }
 
 resource "google_sql_user" "my_user" {
-  name     = "cloud-bite-user"
+  name     = var.DB_USER
   instance = google_sql_database_instance.instance.name
-  password = "cloud-bite-password"
+  password = var.DB_PASSWORD
+}
+
+output "database_ip" {
+  value = google_sql_database_instance.instance.ip_address[0]
 }
