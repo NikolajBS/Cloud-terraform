@@ -27,3 +27,6 @@ variable "DB_PASSWORD" {
 variable "DB_PORT" {
   
 }
+variable "email" {
+  
+}

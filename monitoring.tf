@@ -5,7 +5,7 @@ resource "google_logging_project_sink" "my_log_sink" {
   destination = "bigquery.googleapis.com/projects/${var.project}/datasets/logs"
   filter      = "severity >= ERROR"
 }
-
+# this alert will send a mail whenever the traffic exceeds the treshold value of 1
 resource "google_monitoring_alert_policy" "my_alert_policy" {
   display_name = "My Alert Policy"
   combiner     = "OR"
@@ -30,7 +30,7 @@ resource "google_monitoring_notification_channel" "example" {
   type         = "email"
 
   labels = {
-    email_address = "math-351@hotmail.com"
+    email_address = var.email
   }
 
   project = var.project
