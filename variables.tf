@@ -30,3 +30,9 @@ variable "DB_PORT" {
 variable "email" {
   
 }
+
+variable "name" {
+  type           = string
+  description  = "Name for this vpc network"
+  default       = "<any-name>"
+}
