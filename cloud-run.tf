@@ -1,7 +1,7 @@
 resource "google_cloud_run_v2_service" "default" {
-  name     = "cloud-bite-backend"
+   name     = "cloud-bite-backend"
   location = var.region
-  ingress  = "INGRESS_TRAFFIC_ALL"
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_AND_INTERNAL_ONLY"
   project  = var.project
   
   depends_on = [google_project_service.cloud_run_api, google_project_service.sql_admin_api]
@@ -15,6 +15,9 @@ resource "google_cloud_run_v2_service" "default" {
       name = "cloudsql"
       cloud_sql_instance {
         instances = [google_sql_database_instance.instance.connection_name]
+        private_database_connection {
+          enable_private_ip = true
+        }
       }
     }
   
