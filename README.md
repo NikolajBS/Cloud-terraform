@@ -21,7 +21,7 @@ Create Cloud SQL MySQL instance.✅
 
 Create connection between Cloud Run backend and the deployed MySQL instance.✅
 
-Implement centralised logging and alerting on key metrics for the whole stack.
+Implement centralised logging and alerting on key metrics for the whole stack. 
 
 Create detailed report about architecture and implementation choices. Include what you have learned from the leactures, industry talks, Terraform sessions and Google Cloud lectures and labs. Include your own considerations, and the different ways you tried to implement the objectives, and which worked and which did not. If you were not able to implement something with Terraform, list it, and give an explanation why, and how you did it in the end.
 
@@ -35,7 +35,10 @@ Change frontend app build process so that the backend address comes from configu
 
 === COMPLETE THE ABOVE FOR 7 ===
 
-Secure the frontend with HTTPS & add domain name.
+Secure the frontend with HTTPS ✅
+
+add domain name.✅
+
 OR
 Implement storing food images, in a bucket and shows as the menu items (e.g. by acquiring images with a Cloud Function).✅
 

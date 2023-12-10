@@ -2,6 +2,7 @@ resource "google_sql_database_instance" "instance" {
   name             = "cloudrun-sql"
   region           = var.region
   database_version = "MYSQL_8_0"
+  
   settings {
     tier = "db-f1-micro"
     ip_configuration {
@@ -26,5 +27,5 @@ resource "google_sql_user" "my_user" {
 }
 
 output "database_ip" {
-  value = google_sql_database_instance.instance.ip_address[0]
+  value = google_sql_database_instance.instance.public_ip_address
 }

@@ -8,9 +8,10 @@ resource "google_cloud_run_v2_service" "default" {
 
   template {
     scaling {
-      max_instance_count = 2
+      min_instance_count = 1
+      max_instance_count = 5
     }
-
+    
     volumes {
       name = "cloudsql"
       cloud_sql_instance {
@@ -51,8 +52,11 @@ resource "google_cloud_run_v2_service" "default" {
         mount_path = "/cloudsql"
       }
     }
+    # vpc_access{
+    #       connector = google_service_networking_connection.private-services-connection.id
+    #       egress = "ALL_TRAFFIC"
+    #     }
   }
-
   traffic {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
     percent = 100
@@ -76,4 +80,17 @@ data "google_cloud_run_service" "backend" {
 
 output "backend_url" {
   value = data.google_cloud_run_service.backend.status[0].url
+}
+resource "google_storage_bucket" "gcs-bucket" {
+  name     = "logging-bucket-gcp-cloud-run"
+  location = "EU"
+}
+
+resource "google_logging_project_sink" "instance-sink" {
+  name        = "my-instance-sink"
+  description = "some explanation on what this is"
+  destination = "storage.googleapis.com/${google_storage_bucket.gcs-bucket.name}"
+  filter = "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"${google_cloud_run_v2_service.default.name}\""
+
+  unique_writer_identity = true
 }
