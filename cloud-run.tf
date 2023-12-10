@@ -1,12 +1,12 @@
 resource "google_cloud_run_v2_service" "default" {
-   name     = "cloud-bite-backend"
+  name     = "cloud-bite-backend"
   location = var.region
-  ingress  = "INGRESS_TRAFFIC_INTERNAL_AND_INTERNAL_ONLY"
+  ingress  = "INGRESS_TRAFFIC_ALL"
   project  = var.project
   
   depends_on = [google_project_service.cloud_run_api, google_project_service.sql_admin_api]
-
   template {
+    
     scaling {
       min_instance_count = 1
       max_instance_count = 5
@@ -16,9 +16,6 @@ resource "google_cloud_run_v2_service" "default" {
       name = "cloudsql"
       cloud_sql_instance {
         instances = [google_sql_database_instance.instance.connection_name]
-        private_database_connection {
-          enable_private_ip = true
-        }
       }
     }
   
@@ -55,10 +52,11 @@ resource "google_cloud_run_v2_service" "default" {
         mount_path = "/cloudsql"
       }
     }
-    # vpc_access{
-    #       connector = google_service_networking_connection.private-services-connection.id
-    #       egress = "ALL_TRAFFIC"
-    #     }
+    vpc_access {
+      connector = google_vpc_access_connector.connector.id
+      egress = "ALL_TRAFFIC"
+      
+    }
   }
   traffic {
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
@@ -84,6 +82,8 @@ data "google_cloud_run_service" "backend" {
 output "backend_url" {
   value = data.google_cloud_run_service.backend.status[0].url
 }
+
+## below could be removed
 resource "google_storage_bucket" "gcs-bucket" {
   name     = "logging-bucket-gcp-cloud-run"
   location = "EU"

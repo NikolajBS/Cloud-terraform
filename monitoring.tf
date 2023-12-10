@@ -49,12 +49,12 @@ resource "google_monitoring_alert_policy" "frontend_health_policy" {
     display_name = "High Object Count on Frontend Bucket"
     condition_threshold {
       filter           = "metric.type=\"storage.googleapis.com/storage/object_count\" AND resource.type=\"gcs_bucket\" AND resource.labels.bucket_name=\"${google_storage_bucket.cloud_bite_frontend.name}\""
-      threshold_value  = 1000  # Change this threshold value as needed
+      threshold_value  = 1000  
       duration         = "300s"
       comparison       = "COMPARISON_GT"
       aggregations {
         alignment_period   = "60s"
-        per_series_aligner = "ALIGN_NONE"  # Use ALIGN_NONE for GAUGE metrics
+        per_series_aligner = "ALIGN_NONE"  
       }
     }
   }

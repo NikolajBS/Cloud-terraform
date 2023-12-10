@@ -19,43 +19,48 @@ provider "google" {
 # part of vpc
 data "google_compute_zones" "this" {
   region  = var.region
-  project = var.project_id
+  project = var.project
 }
 
-locals {
-  type   = ["public", "private"]
-  zones = data.google_compute_zones.this.names
-}
-
-# VPC
+# VPC network
 resource "google_compute_network" "this" {
   name = "${var.name}-vpc"
   delete_default_routes_on_create = false
   auto_create_subnetworks = false
   routing_mode = "REGIONAL"
 }
-
+# create an ip address
+resource "google_compute_global_address" "private_ip_alloc" {
+  name          = "private-ip-alloc"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = google_compute_network.this.id
+}
 # Subnets for vpc
 resource "google_compute_subnetwork" "this" {
-  count                   = length(locals.type)
-  name                    = "${var.name}-subnet-${local.type[count.index]}"
-  ip_cidr_range           = local.type[count.index] == "public" ? "10.0.1.0/24" : "10.0.2.0/24"
+  name                    = "test1234"
+  ip_cidr_range           = "10.0.2.0/28"
   network                 = google_compute_network.this.id
   region                  = var.region
-  private_ip_google_access = local.type[count.index] == "private" ? true : false
+  private_ip_google_access = true
 }
-
-# Firewall rules for vpc
-resource "google_compute_firewall" "this" {
-  name    = "${var.name}-firewall"
-  network = google_compute_network.this.name
-
-  allow {
-    protocol = "tcp"
-    ports    = ["80", "443"]
+resource "google_service_networking_connection" "private_connection" {
+  network                 = google_compute_network.this.name
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_alloc.name]
+  
+  depends_on = [google_compute_network.this]
+}
+resource "google_vpc_access_connector" "connector" {
+  name          = "run-vpc"
+  subnet {
+    name = google_compute_subnetwork.this.name
   }
-
-  source_ranges = ["0.0.0.0/0"] 
+  machine_type = "e2-standard-4"
+  min_instances = 2
+  max_instances = 3
+  region        = "europe-north1"
 }
 
 # resource "google_storage_bucket" "tf-backend" {

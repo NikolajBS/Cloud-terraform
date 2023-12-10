@@ -13,6 +13,7 @@ resource "google_storage_bucket" "cloud_bite_frontend" {
   website {
     main_page_suffix = "index.html"
   }
+  
 }
 
 resource "google_storage_bucket_iam_member" "member" {
@@ -35,7 +36,7 @@ resource "google_compute_global_address" "website_ip" {
 }
 
 data "google_dns_managed_zone" "dns_zone" {
-  name = "group8-dev"  # Replace with your desired DNS zone name
+  name = "group8-dev"  
 }
 
 resource "google_dns_record_set" "group8_frontend" {
