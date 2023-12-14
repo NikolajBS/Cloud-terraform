@@ -11,7 +11,6 @@ resource "google_sql_database_instance" "instance" {
       private_network = google_compute_network.this.id
       enable_private_path_for_google_cloud_services = true
     }
-    
   }
   deletion_protection = false
 }

@@ -24,24 +24,49 @@ resource "google_cloud_run_v2_service" "default" {
         
         env {
           name  = "DATABASE_HOST"
-          value = google_secret_manager_secret_version.database_host_secret_version.secret_data
+          value_source {
+            secret_key_ref {
+              secret = google_secret_manager_secret.database_host_secret.name
+              version = google_secret_manager_secret_version.database_host_secret_version.version
+          } 
+        }
         }
         env {
           name  = "DATABASE_USERNAME"
-          value = google_secret_manager_secret_version.database_username_secret_version.secret_data
+          value_source {
+            secret_key_ref {
+              secret = google_secret_manager_secret.database_username_secret.name
+              version = google_secret_manager_secret_version.database_username_secret_version.version
+          } 
+        }
         }
          env {
           name  = "DATABASE_PASSWORD"
-          value = google_secret_manager_secret_version.database_password_secret_version.secret_data
+          value_source {
+            secret_key_ref {
+              secret = google_secret_manager_secret.database_password_secret.name
+              version = google_secret_manager_secret_version.database_password_secret_version.version
+          } 
+        }
          }
 
          env {
           name  = "DATABASE_NAME"
-          value = google_secret_manager_secret_version.database_name_secret_version.secret_data
+          value_source {
+            secret_key_ref {
+              secret = google_secret_manager_secret.database_name_secret.name
+              version = google_secret_manager_secret_version.database_name_secret_version.version
+          } 
+        }
          }
          env {
           name = "DATABASE_PORT"
-          value = google_secret_manager_secret_version.database_port_secret_version.secret_data
+          value_source {
+            secret_key_ref {
+              secret = google_secret_manager_secret.database_port_secret.name
+              version = google_secret_manager_secret_version.database_port_secret_version.version
+          } 
+        }
          }
       ports {
         container_port = 3000
@@ -81,19 +106,4 @@ data "google_cloud_run_service" "backend" {
 
 output "backend_url" {
   value = data.google_cloud_run_service.backend.status[0].url
-}
-
-## below could be removed
-resource "google_storage_bucket" "gcs-bucket" {
-  name     = "logging-bucket-gcp-cloud-run"
-  location = "EU"
-}
-
-resource "google_logging_project_sink" "instance-sink" {
-  name        = "my-instance-sink"
-  description = "some explanation on what this is"
-  destination = "storage.googleapis.com/${google_storage_bucket.gcs-bucket.name}"
-  filter = "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"${google_cloud_run_v2_service.default.name}\""
-
-  unique_writer_identity = true
 }

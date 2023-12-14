@@ -60,17 +60,6 @@ resource "google_vpc_access_connector" "connector" {
   machine_type = "e2-standard-4"
   min_instances = 2
   max_instances = 3
-  region        = "europe-north1"
+  region        = var.region
 }
-
-# resource "google_storage_bucket" "tf-backend" {
-#   name          = "cloud-handin-bucket-gcp"
-#   force_destroy = false
-#   location      = "EU"
-#   storage_class = "STANDARD"
-#   versioning {
-#     enabled = true
-#   }
-#   public_access_prevention = "enforced"
-# }
 

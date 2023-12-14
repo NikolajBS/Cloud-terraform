@@ -1,26 +1,21 @@
-resource "google_logging_project_sink" "cloud_run_log_sink" {
-  name        = "cloud-run-log-sink"
+
+resource "google_storage_bucket" "gcs_logging_bucket" {
+  name     = "logging-bucket-gcp-cloud-run"
+  location = "EU"
+}
+
+# Create a logging sink for Cloud Run instance logs
+resource "google_logging_project_sink" "instance_log_sink" {
+  name        = "cloud-run-sink"
   project     = var.project
-  destination = "bigquery.googleapis.com/projects/${var.project}/datasets/cloud_run_logs"
-  filter      = "resource.type=\"cloud_run_revision\""
+  destination = "storage.googleapis.com/${google_storage_bucket.gcs_logging_bucket.name}"
+  filter      = "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"${google_cloud_run_v2_service.default.name}\""
+  unique_writer_identity = true
+  
 }
 
-
-resource "google_logging_project_sink" "frontend_log_sink" {
-  name        = "frontend-log-sink"
-  project     = var.project
-  destination = "bigquery.googleapis.com/projects/${var.project}/datasets/frontend_logs"
-  filter      = "resource.type=\"gcs_bucket\" AND protoPayload.serviceName=\"storage.googleapis.com/storage\" AND resource.labels.bucket_name=\"cloud-bite-frontend-gcp\""
-}
-
-resource "google_bigquery_dataset" "frontend_logs_dataset" {
-  dataset_id = "frontend_logs"  # Use the same dataset name as in the logging sink
-  project    = var.project
-  location   = "EU"  # Update with your desired location
-}
 
 # this alert will send a mail whenever the traffic exceeds the treshold value of 1
-# Alert policy for high error rate in Cloud Run
 resource "google_monitoring_alert_policy" "cloud_run_error_alert_policy" {
   display_name = "Cloud Run Error Rate Alert"
   combiner = "OR"
@@ -71,5 +66,3 @@ resource "google_monitoring_notification_channel" "example" {
 
   project = var.project
 }
-
-

@@ -41,7 +41,7 @@
 #   }
 # }
 
-# // instance group 
+# # // instance group 
 # resource "google_compute_instance_group_manager" "instance_group" {
 #   name           = "my-instance-group"
 #   base_instance_name = "instance-balance"
