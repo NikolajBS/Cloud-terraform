@@ -44,7 +44,7 @@ Implement storing food images, in a bucket and shows as the menu items (e.g. by 
 
 === COMPLETE THE ABOVE FOR 10 ===
 
-Secure connection between Cloud SQL and Cloud Run.
+Secure connection between Cloud SQL and Cloud Run.✅
 
 === COMPLETE THE ABOVE FOR 12 ===
 
