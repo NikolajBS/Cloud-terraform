@@ -9,7 +9,7 @@ resource "google_secret_manager_secret" "database_host_secret" {
 
 resource "google_secret_manager_secret_version" "database_host_secret_version" {
   secret = google_secret_manager_secret.database_host_secret.id
-  secret_data = google_sql_database_instance.instance.private_ip_address
+  secret_data = var.db_private_ip
 }
 
 resource "google_secret_manager_secret" "database_username_secret" {

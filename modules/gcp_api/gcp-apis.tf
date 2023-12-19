@@ -73,7 +73,7 @@ resource "google_project_service" "bigquery" {
 
 resource "google_project_service" "serverless_vpc_access" {
   project = var.project
-  service = "vpcaccess.googleapis.com"  # Service name for Serverless VPC Access API
+  service = "vpcaccess.googleapis.com"  
 
   disable_on_destroy = false
 }

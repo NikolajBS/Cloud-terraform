@@ -44,8 +44,27 @@ Implement storing food images, in a bucket and shows as the menu items (e.g. by 
 
 === COMPLETE THE ABOVE FOR 10 ===
 
-Secure connection between Cloud SQL and Cloud Run.
+Secure connection between Cloud SQL and Cloud Run.✅
 
 === COMPLETE THE ABOVE FOR 12 ===
 
 STEPS OF IMPLEMENTATION
+
+- set up database in cloud SQL with private IP that is deployed to a custom network.
+
+- Set up secrets to securely store sensitive database information. The values are read from a .tfvars file.
+
+- Set up backend in cloud run with DB variables that are read from secrets. The backend is  also connected to the custom network using VPC connector.
+
+- set up monitoring of central components and alert for high traffic on backend and database.
+
+- added domain name to our frontend with load balancer, through map and proxy, and SSL to ensure encryption
+
+- added bucket for frontend that has CDN enabled.
+
+- passing backend URL dynamically to frontend from the cloud build
+
+- pipeline builds for backend that pushes new image to GCR and tags with 'latest' and frontend that build and replaces frontend bucket with new deployment.
+
+- set up terraform project in a modular way allowing the user to deploy environments in development/production
+

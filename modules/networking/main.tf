@@ -1,27 +1,3 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "5.5.0"
-    }
-  }
-  backend "gcs" {
-    bucket = "cloud-handin-bucket"
-  }
-}
-
-provider "google" {
-  credentials = file(var.gcp_svc_key)
-  project = var.project
-  region = var.region
-}
-
-# part of vpc
-data "google_compute_zones" "this" {
-  region  = var.region
-  project = var.project
-}
-
 # VPC network
 resource "google_compute_network" "this" {
   name = "${var.name}-vpc"
@@ -29,6 +5,7 @@ resource "google_compute_network" "this" {
   auto_create_subnetworks = false
   routing_mode = "REGIONAL"
 }
+
 # create an ip address
 resource "google_compute_global_address" "private_ip_alloc" {
   name          = "private-ip-alloc"
@@ -50,8 +27,9 @@ resource "google_service_networking_connection" "private_connection" {
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_alloc.name]
   
-  depends_on = [google_compute_network.this]
+  depends_on = [google_compute_network.this, google_vpc_access_connector.connector]
 }
+
 resource "google_vpc_access_connector" "connector" {
   name          = "run-vpc"
   subnet {
@@ -62,4 +40,3 @@ resource "google_vpc_access_connector" "connector" {
   max_instances = 3
   region        = var.region
 }
-

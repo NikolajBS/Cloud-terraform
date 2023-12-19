@@ -1,4 +1,3 @@
-
 resource "google_storage_bucket" "gcs_logging_bucket" {
   name     = "logging-bucket-gcp-cloud-run"
   location = "EU"
@@ -9,7 +8,7 @@ resource "google_logging_project_sink" "instance_log_sink" {
   name        = "cloud-run-sink"
   project     = var.project
   destination = "storage.googleapis.com/${google_storage_bucket.gcs_logging_bucket.name}"
-  filter      = "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"${google_cloud_run_v2_service.default.name}\""
+  filter      = "resource.type = \"cloud_run_revision\" AND resource.labels.service_name = \"${var.cloud_run_instance}\""
   unique_writer_identity = true
   
 }
@@ -22,7 +21,7 @@ resource "google_monitoring_alert_policy" "cloud_run_error_alert_policy" {
   conditions {
     display_name = "High Error Rate on Cloud Run"
     condition_threshold {
-      filter           = "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"${google_cloud_run_v2_service.default.name}\""
+      filter           = "metric.type=\"run.googleapis.com/request_count\" AND resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"${var.cloud_run_instance}\""
       threshold_value  = 1
       duration         = "60s"
       comparison       = "COMPARISON_GT"
@@ -36,14 +35,13 @@ resource "google_monitoring_alert_policy" "cloud_run_error_alert_policy" {
 }
 
 # Alert policy for high latency on Frontend bucket
-
 resource "google_monitoring_alert_policy" "frontend_health_policy" {
   combiner = "OR"
   display_name = "Frontend Health Check"
   conditions {
     display_name = "High Object Count on Frontend Bucket"
     condition_threshold {
-      filter           = "metric.type=\"storage.googleapis.com/storage/object_count\" AND resource.type=\"gcs_bucket\" AND resource.labels.bucket_name=\"${google_storage_bucket.cloud_bite_frontend.name}\""
+      filter           = "metric.type=\"storage.googleapis.com/storage/object_count\" AND resource.type=\"gcs_bucket\" AND resource.labels.bucket_name=\"${var.frontend_bucket_name}\""
       threshold_value  = 1000  
       duration         = "300s"
       comparison       = "COMPARISON_GT"
