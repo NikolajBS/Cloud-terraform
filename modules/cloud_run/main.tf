@@ -4,7 +4,7 @@ resource "google_cloud_run_v2_service" "default" {
   ingress  = "INGRESS_TRAFFIC_ALL"
   project  = var.project
   
-  depends_on = [google_project_service.cloud_run_api, google_project_service.sql_admin_api]
+  depends_on = [var.cloud_run_api, var.sql_admin_api]
   template {
     
     scaling {
@@ -15,7 +15,7 @@ resource "google_cloud_run_v2_service" "default" {
     volumes {
       name = "cloudsql"
       cloud_sql_instance {
-        instances = [google_sql_database_instance.instance.connection_name]
+        instances = [var.db_instance_name]
       }
     }
   
@@ -26,8 +26,8 @@ resource "google_cloud_run_v2_service" "default" {
           name  = "DATABASE_HOST"
           value_source {
             secret_key_ref {
-              secret = google_secret_manager_secret.database_host_secret.name
-              version = google_secret_manager_secret_version.database_host_secret_version.version
+              secret = var.host_name
+              version = var.database_host_secret.version
           } 
         }
         }
@@ -35,8 +35,8 @@ resource "google_cloud_run_v2_service" "default" {
           name  = "DATABASE_USERNAME"
           value_source {
             secret_key_ref {
-              secret = google_secret_manager_secret.database_username_secret.name
-              version = google_secret_manager_secret_version.database_username_secret_version.version
+              secret = var.database_username_name
+              version = var.database_username_secret.version
           } 
         }
         }
@@ -44,8 +44,8 @@ resource "google_cloud_run_v2_service" "default" {
           name  = "DATABASE_PASSWORD"
           value_source {
             secret_key_ref {
-              secret = google_secret_manager_secret.database_password_secret.name
-              version = google_secret_manager_secret_version.database_password_secret_version.version
+              secret = var.database_password_name
+              version = var.database_password_secret.version
           } 
         }
          }
@@ -54,8 +54,8 @@ resource "google_cloud_run_v2_service" "default" {
           name  = "DATABASE_NAME"
           value_source {
             secret_key_ref {
-              secret = google_secret_manager_secret.database_name_secret.name
-              version = google_secret_manager_secret_version.database_name_secret_version.version
+              secret = var.database_name
+              version = var.database_name_secret.version
           } 
         }
          }
@@ -63,8 +63,8 @@ resource "google_cloud_run_v2_service" "default" {
           name = "DATABASE_PORT"
           value_source {
             secret_key_ref {
-              secret = google_secret_manager_secret.database_port_secret.name
-              version = google_secret_manager_secret_version.database_port_secret_version.version
+              secret = var.database_port_name
+              version = var.database_port_secret.version
           } 
         }
          }
@@ -78,7 +78,7 @@ resource "google_cloud_run_v2_service" "default" {
       }
     }
     vpc_access {
-      connector = google_vpc_access_connector.connector.id
+      connector = var.vpc_run_connection
       egress = "ALL_TRAFFIC"
       
     }
@@ -104,6 +104,4 @@ data "google_cloud_run_service" "backend" {
   project  = var.project
 }
 
-output "backend_url" {
-  value = data.google_cloud_run_service.backend.status[0].url
-}
+

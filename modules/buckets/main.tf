@@ -16,6 +16,7 @@ resource "google_storage_bucket" "cloud_bite_frontend" {
   
 }
 
+
 resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.cloud_bite_frontend.name
   role   = "roles/storage.objectViewer"
@@ -86,8 +87,4 @@ resource "google_compute_managed_ssl_certificate" "website" {
   managed {
     domains = [ google_dns_record_set.group8_frontend.name ]
   }
-}
-
-output "reserved-ip" {
-  value = google_compute_global_address.website_ip.address
 }

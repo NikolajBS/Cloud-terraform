@@ -11,6 +11,7 @@ variable "project" {
 variable "region" {
   type        = string
   description = "Google Cloud region"
+  default = "europe-north1"
 }
 variable "DB_USER" {
   type = string
@@ -33,6 +34,11 @@ variable "email" {
 
 variable "name" {
   type           = string
-  description  = "Name for this vpc network"
-  default       = "<any-name>"
+  description  = "Production vpc network"
+  default       = "production"
+}
+
+variable "sql_deletion_protection" {
+  type = bool
+  default = true
 }
