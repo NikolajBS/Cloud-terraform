@@ -23,9 +23,13 @@ Create connection between Cloud Run backend and the deployed MySQL instance.
 
 Implement centralised logging and alerting on key metrics for the whole stack. 
 
-Create detailed report about architecture and implementation choices. Include what you have learned from the leactures, industry talks, Terraform sessions and Google Cloud lectures and labs. Include your own considerations, and the different ways you tried to implement the objectives, and which worked and which did not. If you were not able to implement something with Terraform, list it, and give an explanation why, and how you did it in the end.
+Create detailed report about architecture and implementation choices. 
+Include what you have learned from the leactures, industry talks, Terraform sessions and Google Cloud lectures and labs. 
+Include your own considerations, and the different ways you tried to implement the objectives, and which worked and which did not. 
+If you were not able to implement something with Terraform, list it, and give an explanation why, and how you did it in the end.
 
-Write a summary of the main steps of your implementation to the README.md file under STEPS OF IMPLEMENTATION. Consider only the final solution's steps (don't include everything you tried, just what you hand in, so we can easily have an overview of your solution).
+Write a summary of the main steps of your implementation to the README.md file under STEPS OF IMPLEMENTATION. 
+Consider only the final solution's steps (don't include everything you tried, just what you hand in, so we can easily have an overview of your solution).
 
 === COMPLETE THE ABOVE FOR 4 ===
 
@@ -47,6 +51,7 @@ Secure connection between Cloud SQL and Cloud Run.
 === COMPLETE THE ABOVE FOR 12 ===
 
 STEPS OF IMPLEMENTATION
+
 
 - set up database in cloud SQL with private IP that is deployed to a custom network.
 
